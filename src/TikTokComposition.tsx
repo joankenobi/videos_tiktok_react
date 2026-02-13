@@ -45,7 +45,7 @@ export const TikTokComposition: React.FC<z.infer<typeof tikTokSchema>> = ({ quot
             </AbsoluteFill>
 
             {/* Audio Layer */}
-            <Html5Audio src={staticFile("nightdrive.m4a")} />
+            <Html5Audio src={staticFile("nightdrive.m4a")} volume={0.3} />
             {frame < quote.length * 2 && <Html5Audio src={staticFile("typing.m4a")} volume={0.5} />}
 
             {/* Text Overlay Layer */}

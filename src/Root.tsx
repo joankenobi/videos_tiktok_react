@@ -5,6 +5,8 @@ import { TikTokComposition, tikTokSchema } from './TikTokComposition';
 import { TikTokVibe, tikTokVibeSchema } from './TikTokVibe';
 import { TikTokCinema, tikTokCinemaSchema } from './TikTokCinema';
 import { TikTokViral, tikTokViralSchema } from './TikTokViral';
+import { TriviaComposition, triviaSchema } from './TriviaComposition';
+
 
 // Each <Composition> is an entry in the sidebar!
 
@@ -46,20 +48,20 @@ export const RemotionRoot: React.FC = () => {
         }}
       />
 
-        <Composition
-          key={`quote-${1}`}
-          id={`QuoteVideo-${1}`}
-          component={TikTokComposition}
-          durationInFrames={300} // 10 seconds @ 30fps
-          fps={30}
-          width={1080}
-          height={1920}
-          schema={tikTokSchema}
-          defaultProps={{
-            quote: "item.text",
-            videoStartOffset: 411, // Use the offset from the JSON
-          }}
-        />
+      <Composition
+        key={`quote-${1}`}
+        id={`QuoteVideo-${1}`}
+        component={TikTokComposition}
+        durationInFrames={300} // 10 seconds @ 30fps
+        fps={30}
+        width={1080}
+        height={1920}
+        schema={tikTokSchema}
+        defaultProps={{
+          quote: "item.text",
+          videoStartOffset: 411, // Use the offset from the JSON
+        }}
+      />
 
       <Composition
         id="TikTokVideo2"
@@ -127,6 +129,21 @@ export const RemotionRoot: React.FC = () => {
           videoStartOffset: 1800,
         }}
       />
+      <Composition
+        id="TriviaVideo"
+        component={TriviaComposition}
+        durationInFrames={2700} // Increased to 90 seconds (30 * 90)
+        fps={30}
+        width={1080}
+        height={1920}
+        schema={triviaSchema}
+        defaultProps={{
+          pregunta: "¿Cómo se llama el hijo de Kratos?",
+          answer: "Atreus",
+          videoStartOffset: 0,
+        }}
+      />
+
     </>
   );
 };

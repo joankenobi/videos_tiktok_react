@@ -13,6 +13,7 @@ import {
 import { z } from 'zod';
 
 const audioSource = staticFile('nightdrive.m4a');
+const musicSource = staticFile('piano_relajante.mp3');
 const videoSource = staticFile('nightdrive.mp4');
 
 export const tikTokVibeSchema = z.object({
@@ -43,7 +44,7 @@ export const TikTokVibe: React.FC<z.infer<typeof tikTokVibeSchema>> = ({
 }) => {
     const frame = useCurrentFrame();
     const { fps } = useVideoConfig();
-    const audioData = useAudioData(audioSource);
+    const audioData = useAudioData(musicSource);
 
     if (!audioData) {
         return null;
@@ -135,7 +136,8 @@ export const TikTokVibe: React.FC<z.infer<typeof tikTokVibeSchema>> = ({
                 </div>
             </AbsoluteFill>
 
-            <Audio src={audioSource} />
+            <Audio src={audioSource} volume={0.3} />
+            <Audio src={musicSource} volume={0.7} />
         </AbsoluteFill>
     );
 };

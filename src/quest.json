@@ -1,0 +1,252 @@
+[
+  {
+    "pregunta": "¿Cómo se llama el hijo de Kratos?",
+    "respuesta": "Atreus",
+    "id": "1"
+  },
+  {
+    "pregunta": "¿Cuál es el nombre de gigante de Atreus?",
+    "respuesta": "Loki",
+    "id": "2"
+  },
+  {
+    "pregunta": "¿Quién es el extraño que ataca la casa al inicio?",
+    "respuesta": "Baldur",
+    "id": "3"
+  },
+  {
+    "pregunta": "¿Cómo se llama la madre de Atreus?",
+    "respuesta": "Faye",
+    "id": "4"
+  },
+  {
+    "pregunta": "¿Qué hacha utiliza Kratos?",
+    "respuesta": "Hacha Leviatán",
+    "id": "5"
+  },
+  {
+    "pregunta": "¿Quién es la Bruja del Bosque?",
+    "respuesta": "Freya",
+    "id": "6"
+  },
+  {
+    "pregunta": "¿Cómo se llama la serpiente gigante?",
+    "respuesta": "Jörmungandr",
+    "id": "7"
+  },
+  {
+    "pregunta": "¿Qué deben esparcir en la montaña?",
+    "respuesta": "Cenizas",
+    "id": "8"
+  },
+  {
+    "pregunta": "¿De qué tierra proviene Kratos?",
+    "respuesta": "Esparta",
+    "id": "9"
+  },
+  {
+    "pregunta": "¿Quién es el padre de Kratos?",
+    "respuesta": "Zeus",
+    "id": "10"
+  },
+  {
+    "pregunta": "¿Cómo se llama el árbol del mundo?",
+    "respuesta": "Yggdrasil",
+    "id": "11"
+  },
+  {
+    "pregunta": "¿Quién es el enano de piel azul?",
+    "respuesta": "Brok",
+    "id": "12"
+  },
+  {
+    "pregunta": "¿Cómo se llama el hermano de Brok?",
+    "respuesta": "Sindri",
+    "id": "13"
+  },
+  {
+    "pregunta": "¿Quién es el hombre más sabio vivo?",
+    "respuesta": "Mimir",
+    "id": "14"
+  },
+  {
+    "pregunta": "¿Qué flechas rompen el hechizo de Baldur?",
+    "respuesta": "Muérdago",
+    "id": "15"
+  },
+  {
+    "pregunta": "¿A qué reino van los gigantes?",
+    "respuesta": "Jötunheim",
+    "id": "16"
+  },
+  {
+    "pregunta": "¿Cómo se llama el hijo de Thor que enfrentan?",
+    "respuesta": "Magni",
+    "id": "17"
+  },
+  {
+    "pregunta": "¿Qué armas recupera Kratos de su pasado?",
+    "respuesta": "Espadas Caos",
+    "id": "18"
+  },
+  {
+    "pregunta": "¿Cómo se llama el reino de los muertos?",
+    "respuesta": "Helheim",
+    "id": "19"
+  },
+  {
+    "pregunta": "¿Qué objeto permite viajar entre reinos?",
+    "respuesta": "Bifrost",
+    "id": "20"
+  },
+  {
+    "pregunta": "¿Quién es el Rey de los Aesir?",
+    "respuesta": "Odin",
+    "id": "21"
+  },
+  {
+    "pregunta": "¿Cómo se llama la tortuga de Freya?",
+    "respuesta": "Charly",
+    "id": "22"
+  },
+  {
+    "pregunta": "¿Qué órgano necesita Freya para curar a Atreus?",
+    "respuesta": "Corazón Guardián",
+    "id": "23"
+  },
+  {
+    "pregunta": "¿Quién es el dios de la guerra nórdico?",
+    "respuesta": "Tyr",
+    "id": "24"
+  },
+  {
+    "pregunta": "¿Qué invierno precede al fin del mundo?",
+    "respuesta": "Fimbulwinter",
+    "id": "25"
+  },
+  {
+    "pregunta": "¿Cómo se llaman las guerreras aladas?",
+    "respuesta": "Valquirias",
+    "id": "26"
+  },
+  {
+    "pregunta": "¿Qué raza era la madre de Atreus?",
+    "respuesta": "Gigante",
+    "id": "27"
+  },
+  {
+    "pregunta": "¿Qué lengua habla Jörmungandr?",
+    "respuesta": "Lengua muerta",
+    "id": "28"
+  },
+  {
+    "pregunta": "¿Qué le falta a Mimir en su rostro?",
+    "respuesta": "Un ojo",
+    "id": "29"
+  },
+  {
+    "pregunta": "¿Qué regalo le da Kratos a Atreus?",
+    "respuesta": "Cuchillo",
+    "id": "30"
+  },
+  {
+    "pregunta": "¿Con quién sueña Atreus al final?",
+    "respuesta": "Thor",
+    "id": "31"
+  },
+  {
+    "pregunta": "¿Quién es el gigante mampostero muerto?",
+    "respuesta": "Thamur",
+    "id": "32"
+  },
+  {
+    "pregunta": "¿Qué luz atraviesa el Aliento Negro?",
+    "respuesta": "Luz Alfheim",
+    "id": "33"
+  },
+  {
+    "pregunta": "¿Quiénes habitan y pelean en Alfheim?",
+    "respuesta": "Elfos",
+    "id": "34"
+  },
+  {
+    "pregunta": "¿Qué herramienta abre puertas mágicas?",
+    "respuesta": "Cincel",
+    "id": "35"
+  },
+  {
+    "pregunta": "¿Qué piedra permite el viaje de unidad?",
+    "respuesta": "Piedra Unidad",
+    "id": "36"
+  },
+  {
+    "pregunta": "¿A quién mató Kratos en el Olimpo?",
+    "respuesta": "A dioses",
+    "id": "37"
+  },
+  {
+    "pregunta": "¿Qué sentía Baldur antes de romperse el hechizo?",
+    "respuesta": "Nada",
+    "id": "38"
+  },
+  {
+    "pregunta": "¿De quién era el nombre Atreus originalmente?",
+    "respuesta": "Soldado espartano",
+    "id": "39"
+  },
+  {
+    "pregunta": "¿Qué naturaleza comparte Atreus con Kratos?",
+    "respuesta": "Dios",
+    "id": "40"
+  },
+  {
+    "pregunta": "¿Quién es el otro hijo de Thor?",
+    "respuesta": "Modi",
+    "id": "41"
+  },
+  {
+    "pregunta": "¿Qué estatua se tragó la serpiente?",
+    "respuesta": "Estatua Thor",
+    "id": "42"
+  },
+  {
+    "pregunta": "¿De qué tipo es la magia de Freya?",
+    "respuesta": "Magia Vanir",
+    "id": "43"
+  },
+  {
+    "pregunta": "¿En qué animal pregunta Atreus si puede convertirse?",
+    "respuesta": "Lobo",
+    "id": "44"
+  },
+  {
+    "pregunta": "¿Quién guio a los protagonistas mediante marcas?",
+    "respuesta": "Faye",
+    "id": "45"
+  },
+  {
+    "pregunta": "¿Qué es Freya para Baldur?",
+    "respuesta": "Su madre",
+    "id": "46"
+  },
+  {
+    "pregunta": "¿Dónde deben llevar las cenizas?",
+    "respuesta": "Pico alto",
+    "id": "47"
+  },
+  {
+    "pregunta": "¿Cómo se llama el otro ojo de Mimir?",
+    "respuesta": "Joyas",
+    "id": "48"
+  },
+  {
+    "pregunta": "¿Qué protegía el bosque al inicio?",
+    "respuesta": "Símbolo protección",
+    "id": "49"
+  },
+  {
+    "pregunta": "¿Quién es el enemigo final del juego?",
+    "respuesta": "Baldur",
+    "id": "50"
+  }
+]

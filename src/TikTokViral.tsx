@@ -4,8 +4,10 @@ import {
     Audio,
     interpolate,
     OffthreadVideo,
+    Html5Video,
     staticFile,
     useCurrentFrame,
+    useVideoConfig,
 } from 'remotion';
 import { z } from 'zod';
 
@@ -35,7 +37,7 @@ const Word = ({ word, index, startFrame }: { word: string, index: number, startF
 
     const color = interpolate(frame, [wordStart, wordStart + 5], [0, 1], {
         extrapolateRight: 'clamp'
-    }) > 0.5 ? '#FE2C55' : 'white'; // TikTok Red bounce
+    }) > 0.5 ? '#1957a8ff' : 'white'; // TikTok Red bounce
 
     return (
         <span style={{
@@ -43,7 +45,7 @@ const Word = ({ word, index, startFrame }: { word: string, index: number, startF
             transform: `scale(${scale})`,
             display: 'inline-block',
             margin: '0 8px',
-            color: 'white',
+            color: color,
             textShadow: '3px 3px 0px #000',
         }}>
             {word}
@@ -56,6 +58,7 @@ export const TikTokViral: React.FC<z.infer<typeof tikTokViralSchema>> = ({
     videoStartOffset,
 }) => {
     const words = quote.split(' ');
+    const { fps } = useVideoConfig();
 
     return (
         <AbsoluteFill style={{ backgroundColor: 'black' }}>
@@ -68,9 +71,9 @@ export const TikTokViral: React.FC<z.infer<typeof tikTokViralSchema>> = ({
                     overflow: 'hidden',
                 }}
             >
-                <OffthreadVideo
+                <Html5Video
                     src={videoSource}
-                    startFrom={videoStartOffset}
+                    trimBefore={videoStartOffset * fps}
                     style={{
                         position: 'absolute',
                         top: 0,
@@ -88,7 +91,7 @@ export const TikTokViral: React.FC<z.infer<typeof tikTokViralSchema>> = ({
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
                     }}
                 />
             </AbsoluteFill>
@@ -117,7 +120,10 @@ export const TikTokViral: React.FC<z.infer<typeof tikTokViralSchema>> = ({
                 </div>
             </AbsoluteFill>
 
-            <Audio src={audioSource} />
+            <Audio 
+            src={audioSource}
+            trimBefore={videoStartOffset * fps} 
+            />
         </AbsoluteFill>
     );
 };
