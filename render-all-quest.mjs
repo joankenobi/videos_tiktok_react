@@ -20,9 +20,9 @@ const renderAll = async () => {
 
     for (const comp of quoteComps) {
         for (const quote of quotes){
-            if (quote.id === 1 || quote.id > 4 ){
-                continue;
-            }
+            // if (quote.id === 1 || quote.id > 4 ){
+            //     continue;
+            // }
             const outputLocation = `out/${comp.id}-trivia${quote.id}.mp4`;
             console.log(`Rendering ${comp.id}-${quote.id} to ${outputLocation}...`);
             comp.props.pregunta = quote.pregunta;
@@ -40,8 +40,9 @@ const renderAll = async () => {
             });
 
             videoBacksUsed.offsetseg += 120;
+            console.log(`\nUpdated offsetseg to ${videoBacksUsed.offsetseg}`);
         }
-        console.log(`\nFinished rendering ${comp.id}`);
+        console.log(`\nFinished rendering ${comp.id} comp length ${comp.length}`);
     }
 
     console.log("All renders complete!");

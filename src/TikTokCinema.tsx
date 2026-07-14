@@ -7,7 +7,6 @@ import {
     random,
     staticFile,
     useCurrentFrame,
-    useVideoConfig,
 } from 'remotion';
 import { z } from 'zod';
 

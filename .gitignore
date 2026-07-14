@@ -7,3 +7,8 @@ dist
 out
 public/*
 .agent
+.continue
+.cline
+.agent
+.agents
+.claude

@@ -57,9 +57,8 @@ export const TriviaComposition: React.FC<z.infer<typeof triviaSchema>> = ({ preg
     return (
         <AbsoluteFill style={{ backgroundColor: 'black' }}>
             <style>
-                {`
-                @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=Quicksand:wght@400;700&display=swap');
-                `}
+                {
+                `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=Quicksand:wght@400;700&display=swap');`}
             </style>
             {/* Background Video Layer */}
             <AbsoluteFill style={{ overflow: 'hidden' }}>
@@ -99,7 +98,7 @@ export const TriviaComposition: React.FC<z.infer<typeof triviaSchema>> = ({ preg
                         display: 'flex',
                         flexDirection: 'column',
                         boxShadow: '0 20px 50px rgba(0, 0, 0, 0.2)',
-                        fontFamily: '"Outfit", "Quicksand", sans-serif',
+                        fontFamily: '"Outfit", "Quicksand", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                     }}
                 >
                     <span

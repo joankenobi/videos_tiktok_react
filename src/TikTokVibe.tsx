@@ -6,7 +6,6 @@ import {
     interpolate,
     OffthreadVideo,
     staticFile,
-    Sequence,
     useCurrentFrame,
     useVideoConfig,
 } from 'remotion';

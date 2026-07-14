@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { AbsoluteFill, Audio, staticFile, useCurrentFrame, useVideoConfig, OffthreadVideo, Html5Audio } from 'remotion';
+import { AbsoluteFill, staticFile, useCurrentFrame, useVideoConfig, OffthreadVideo, Html5Audio } from 'remotion';
 import { z } from "zod";
 
 export const tikTokSchema = z.object({

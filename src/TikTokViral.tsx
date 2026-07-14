@@ -3,13 +3,14 @@ import {
     AbsoluteFill,
     Audio,
     interpolate,
-    OffthreadVideo,
     Html5Video,
     staticFile,
     useCurrentFrame,
     useVideoConfig,
 } from 'remotion';
 import { z } from 'zod';
+
+
 
 const audioSource = staticFile('nightdrive.m4a');
 const videoSource = staticFile('nightdrive.mp4');
