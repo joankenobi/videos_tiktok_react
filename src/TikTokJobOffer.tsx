@@ -16,8 +16,17 @@ import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { Briefcase, MapPin, DollarSign, CheckCircle, Star, Sparkles } from 'lucide-react';
 import { GradientText, ShinyText, Particles, StarBorder } from './ReactBitsForRemotion';
 
-const { fontFamily } = loadFont();
-const { fontFamily: bodyFont } = loadInter();
+let fontFamily = 'system-ui, sans-serif';
+let bodyFont = 'system-ui, sans-serif';
+
+try {
+    const loaded = loadFont();
+    const loadedInter = loadInter();
+    fontFamily = loaded.fontFamily;
+    bodyFont = loadedInter.fontFamily;
+} catch (error) {
+    console.warn('Google Fonts failed to load, using system fonts:', error);
+}
 
 export const tikTokJobOfferSchema = z.object({
     // Background media
