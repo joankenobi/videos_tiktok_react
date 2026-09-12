@@ -6,6 +6,7 @@ import { TikTokVibe, tikTokVibeSchema } from "./TikTokVibe";
 import { TikTokCinema, tikTokCinemaSchema } from "./TikTokCinema";
 import { TikTokViral, tikTokViralSchema } from "./TikTokViral";
 import { TikTokJobOffer, tikTokJobOfferSchema } from "./TikTokJobOffer";
+import { DanceCompilation, danceCompilationSchema } from "./DanceCompilation";
 import { TriviaComposition, triviaSchema } from "./TriviaComposition";
 import { GithubRepoVideo, githubRepoSchema } from "./GithubRepoVideo";
 import {
@@ -148,7 +149,7 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={tikTokJobOfferSchema}
         defaultProps={{
-          backgroundImage: "20260620\\215205_20260620.jpg",
+          backgroundImage: "locations\\231373_20260909.jpg",
           backgroundType: "image" as const,
           videoStartOffset: 0,
           backgroundZoomStart: 1,
@@ -193,6 +194,150 @@ export const RemotionRoot: React.FC = () => {
           autoFitImage: true,
           imageWidth: 1080,
           imageHeight: 1080,
+        }}
+      />
+      {/* ── Dance Compilation ──────────────────────────────────────────
+           Place your dance videos (dance1.mp4, dance2.mp4, etc.) and 
+           background music in public/ folder
+           ─────────────────────────────────────────────────────────────── */}
+      <Composition
+        id="DanceCompilation"
+        component={DanceCompilation}
+        durationInFrames={1050} // 35 seconds @ 30fps
+        fps={30}
+        width={1080}
+        height={1920}
+        schema={danceCompilationSchema}
+        defaultProps={{
+          compilationTitle: "DANCE COMPILATION",
+          compilationSubtitle: "Best moves of the week 🔥",
+          primaryColor: "#fe2c55",
+          secondaryColor: "#3b82f6",
+          backgroundMusic: "background-music.mp3",
+          musicVolume: 0,
+          transitionStyle: "crossfade" as const,
+          transitionDuration: 15,
+          showProgressBar: false,
+          showClipCounter: true,
+          enableParticles: true,
+          watermark: "",
+          watermarkOpacity: 0.25,
+          clips: [
+            {
+              src: "dance1.mp4",
+              title: "VIRAL HIP HOP",
+              dancer: "Unknown",
+              style: "Hip Hop",
+              location: "LA Studio",
+              themeColor: "#fe2c55",
+              startFrom: 5,
+              fit: "cover" as const,
+              blurBackground: false,
+              textDelay: 10,
+              featured: false,
+              muted: false,
+              volume: 1,
+              backgroundColor: "#000000",
+              blurAmount: -196,
+              opacity: 1,
+              playbackRate: 1,
+            },
+            {
+              src: "dance2.mp4",
+              title: "SMOOTH CONTEMPORARY",
+              dancer: "Unknown",
+              style: "Contemporary",
+              location: "NYC",
+              themeColor: "#3b82f6",
+              startFrom: 0.8,
+              fit: "cover" as const,
+              blurBackground: true,
+              textDelay: 10,
+              featured: false,
+              muted: false,
+              volume: 1,
+              backgroundColor: "#000000",
+              blurAmount: 10,
+              opacity: 1,
+              playbackRate: 1,
+            },
+            {
+              src: "dance3.mp4",
+              title: "LATIN FUSION FIRE",
+              dancer: "Unknown",
+              style: "Latin Fusion",
+              location: "Miami",
+              themeColor: "#f59e0b",
+              startFrom: 2.2,
+              fit: "cover" as const,
+              blurBackground: true,
+              textDelay: 10,
+              featured: false,
+              muted: false,
+              volume: 1,
+              backgroundColor: "#000000",
+              blurAmount: 10,
+              opacity: 1,
+              playbackRate: 1,
+            },
+            {
+              src: "dance4.mp4",
+              title: "LATIN PERFECTION",
+              dancer: "Unknown",
+              style: "Latin Cover",
+              location: "Practice Room",
+              themeColor: "#ec4899",
+              startFrom: 0,
+              fit: "cover" as const,
+              blurBackground: true,
+              textDelay: 10,
+              featured: false,
+              muted: false,
+              volume: 1,
+              backgroundColor: "#000000",
+              blurAmount: 10,
+              opacity: 1,
+              playbackRate: 1,
+            },
+            {
+              src: "dance1.mp4",
+              title: "VIRAL HIP HOP",
+              dancer: "Unknown",
+              style: "Hip Hop",
+              location: "LA Studio",
+              themeColor: "#fe2c55",
+              startFrom: 6,
+              fit: "cover" as const,
+              blurBackground: false,
+              textDelay: 10,
+              featured: false,
+              muted: false,
+              volume: 1,
+              backgroundColor: "#000000",
+              blurAmount: -196,
+              opacity: 1,
+              playbackRate: 2,
+            },
+            {
+              src: "dance4.mp4",
+              title: "LATIN PERFECTION",
+              dancer: "Unknown",
+              style: "Latin Cover",
+              location: "Practice Room",
+              themeColor: "#ec4899",
+              startFrom: 6,
+              fit: "cover" as const,
+              blurBackground: true,
+              textDelay: 10,
+              featured: false,
+              muted: false,
+              volume: 1,
+              backgroundColor: "#000000",
+              blurAmount: 10,
+              opacity: 1,
+              playbackRate: 0.5,
+            },
+          ],
         }}
       />
       <Composition

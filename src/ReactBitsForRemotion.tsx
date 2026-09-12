@@ -181,12 +181,13 @@ export const GradientText: React.FC<GradientTextProps> = ({
 // Original usa: CSS @keyframes — portado a inline style animado por frame
 
 interface StarBorderProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     color?: string;
     speed?: number; // frames per full rotation
     style?: React.CSSProperties;
     borderRadius?: string;
     padding?: string;
+    size?:number;
 }
 
 export const StarBorder: React.FC<StarBorderProps> = ({
@@ -261,19 +262,26 @@ function generateParticles(count: number, colors: string[], seed: number): Parti
     return particles;
 }
 
+interface StylesProps {
+    filter:string
+}
 interface ParticlesProps {
     count?: number;
-    colors?: string[];
+    size?: number;
+    ParticlesColors?: string[];
     seed?: number;
+    speed?:number;
+    opacity?:number
+    style: StylesProps
 }
 
 export const Particles: React.FC<ParticlesProps> = ({
     count = 40,
-    colors = ['#3b82f6', '#8b5cf6', '#22c55e'],
+    ParticlesColors = ['#3b82f6', '#8b5cf6', '#22c55e'],
     seed = 42,
 }) => {
     const frame = useCurrentFrame();
-    const particles = React.useMemo(() => generateParticles(count, colors, seed), [count, colors, seed]);
+    const particles = React.useMemo(() => generateParticles(count, ParticlesColors, seed), [count, ParticlesColors, seed]);
 
     return (
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>

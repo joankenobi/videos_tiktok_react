@@ -35,7 +35,7 @@ function getUniqueBy(arr, keyFn) {
 let imageToWork = [];
 let imageTofilter = [];
 
-const basePath = "20260720";
+const basePath = "locations";
 const dir = `c:\\Users\\Public\\Documents\\Programacion\\remotion-video\\public\\${basePath}`;
 const files = fs.readdirSync(dir).filter((f) => f.endsWith(".jpg"));
 
@@ -112,6 +112,10 @@ uniqueByDimensionsSize.forEach((img, index) => {
 });
 
 console.log("\n🎉 All renders completed!");
+playSong = 'powershell -c "(New-Object Media.SoundPlayer \'C:\Windows\Media\tada.wav\').PlaySync()"'
+execSync(playSong)
+execSync(playSong)
+execSync(playSong)
 
 // for run node get-dimensions.js
 
