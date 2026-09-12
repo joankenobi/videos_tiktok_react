@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   AbsoluteFill,
-  Audio,
+  Html5Audio,
   Sequence,
   staticFile,
   useCurrentFrame,
@@ -14,16 +14,20 @@ import { FittedVideo, fittedVideoSchema } from './FittedVideo';
 import { GradientText, ShinyText, Particles, StarBorder } from './ReactBitsForRemotion';
 import { loadFont } from '@remotion/google-fonts/SpaceGrotesk';
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
+import { loadFont as loadMontserrat } from '@remotion/google-fonts/Montserrat';
 import { Music, Sparkles, Zap, Heart, Award } from 'lucide-react';
 
 let fontFamily = 'system-ui, sans-serif';
 let bodyFont = 'system-ui, sans-serif';
+let displayFont = 'system-ui, sans-serif';
 
 try {
   const loaded = loadFont();
   const loadedInter = loadInter();
+  const loadedMontserrat = loadMontserrat();
   fontFamily = loaded.fontFamily;
   bodyFont = loadedInter.fontFamily;
+  displayFont = loadedMontserrat.fontFamily;
 } catch (error) {
   console.warn('Google Fonts failed to load, using system fonts:', error);
 }
@@ -88,10 +92,10 @@ export type DanceCompilationProps = z.infer<typeof danceCompilationSchema>;
 /**
  * Individual dance clip with overlays
  */
-const DanceClip: React.FC<DanceClipProps & { 
-  isActive: boolean; 
-  progress: number; 
-  index: number; 
+const DanceClip: React.FC<DanceClipProps & {
+  isActive: boolean;
+  progress: number;
+  index: number;
   total: number;
   globalProgress: number;
 }> = ({
@@ -120,241 +124,245 @@ const DanceClip: React.FC<DanceClipProps & {
   total,
   globalProgress,
 }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+    const frame = useCurrentFrame();
+    const { fps } = useVideoConfig();
 
-  // Entrance animation for text overlays
-  const textEntrance = spring({
-    frame: frame - textDelay,
-    fps,
-    config: { damping: 18, stiffness: 150 },
-  });
+    // Entrance animation for text overlays
+    const textEntrance = spring({
+      frame: frame - textDelay,
+      fps,
+      config: { damping: 18, stiffness: 150 },
+    });
 
-  const titleSlide = interpolate(textEntrance, [0, 1], [60, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const titleOpacity = interpolate(textEntrance, [0, 0.3, 1], [0, 0.8, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+    const titleSlide = interpolate(textEntrance, [0, 1], [60, 0], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+    const titleOpacity = interpolate(textEntrance, [0, 0.3, 1], [0, 0.8, 1], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
 
-  const dancerSlide = interpolate(textEntrance, [0, 1], [40, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const dancerOpacity = interpolate(textEntrance, [0, 0.4, 1], [0, 0.7, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+    const dancerSlide = interpolate(textEntrance, [0, 1], [40, 0], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+    const dancerOpacity = interpolate(textEntrance, [0, 0.4, 1], [0, 0.7, 1], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
 
-  const styleSlide = interpolate(textEntrance, [0, 1], [30, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const styleOpacity = interpolate(textEntrance, [0, 0.5, 1], [0, 0.6, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+    const styleSlide = interpolate(textEntrance, [0, 1], [30, 0], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+    const styleOpacity = interpolate(textEntrance, [0, 0.5, 1], [0, 0.6, 1], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
 
-  // Featured badge pulse
-  const badgeScale = featured ? 1 + Math.sin(frame / 8) * 0.1 : 1;
+    // Featured badge pulse
+    const badgeScale = featured ? 1 + Math.sin(frame / 8) * 0.1 : 1;
 
-  // Progress ring for this clip
-  const clipProgressRing = progress * 360;
+    // Progress ring for this clip
+    const clipProgressRing = progress * 360;
 
-  return (
-    <AbsoluteFill style={{ position: 'relative', overflow: 'hidden' }}>
-      {/* Video Layer - normalized to 1080x1920 */}
-      <FittedVideo
-        src={src}
-        startFrom={startFrom}
-        trimBefore={trimBefore}
-        trimAfter={trimAfter}
-        fit={fit}
-        muted={muted}
-        volume={volume}
-        backgroundColor={backgroundColor}
-        blurBackground={blurBackground}
-        blurAmount={blurAmount}
-        opacity={opacity}
-        playbackRate={playbackRate}
-      />
+    return (
+      <AbsoluteFill style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Video Layer - normalized to 1080x1920 */}
+        <FittedVideo
+          src={src}
+          startFrom={startFrom}
+          trimBefore={trimBefore}
+          trimAfter={trimAfter}
+          fit={fit}
+          muted={muted}
+          volume={volume}
+          backgroundColor={backgroundColor}
+          blurBackground={blurBackground}
+          blurAmount={blurAmount}
+          opacity={opacity}
+          playbackRate={playbackRate}
+        />
 
-      {/* Dark gradient overlay for text readability */}
-      <AbsoluteFill
-        style={{
-          background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.7) 100%)',
-          pointerEvents: 'none',
-        }}
-      />
+        {/* Dark gradient overlay for text readability */}
+        <AbsoluteFill
+          style={{
+            background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.7) 100%)',
+            pointerEvents: 'none',
+          }}
+        />
 
-      {/* Top: Clip counter & progress ring */}
-      <AbsoluteFill
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          paddingTop: '60px',
-          pointerEvents: 'none',
-        }}
-      >
-        {/* Clip counter */}
-        {isActive && (
+        {/* Top: Clip counter & progress ring */}
+        <AbsoluteFill
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            paddingTop: '60px',
+            pointerEvents: 'none',
+          }}
+        >
+          {/* Clip counter */}
+          {isActive && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '16px',
+                opacity: titleOpacity,
+                transform: `translateY(${titleSlide * 0.5}px)`,
+              }}
+            >
+              <div
+                style={{
+                  width: '68px',
+                  height: '68px',
+                  borderRadius: '50%',
+                  border: `3px solid ${themeColor}`,
+                  borderRightColor: 'transparent',
+                  animation: 'spin 0.01s linear infinite',
+                  transform: `rotate(${clipProgressRing*2}deg)`,
+                }}
+              />
+              <div style={{ textAlign: 'left' }}>
+                <GradientText
+                  colors={[themeColor, '#ffffff', themeColor]}
+                  speedFrames={120}
+                  startFrame={textDelay}
+                  style={{ fontFamily, fontSize: '42px', fontWeight: 700, display: 'block' }}
+                >
+                  CLIP {index + 1} / {total}
+                </GradientText>
+                <div
+                  style={{ fontFamily: bodyFont, fontSize: '34px', color: 'rgb(255, 255, 255)', marginTop: '2px', WebkitTextStroke: '0.2px rgb(114, 114, 114)' }}
+                >
+                  {Math.round(progress * 100)}% COMPLETE
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Featured badge */}
+          {featured && isActive && (
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 20px',
+                background: `linear-gradient(135deg, ${themeColor}22, ${themeColor}44)`,
+                border: `1px solid ${themeColor}66`,
+                borderRadius: '50px',
+                backdropFilter: 'blur(10px)',
+                opacity: titleOpacity,
+                transform: `translateY(${titleSlide * 0.5}px) scale(${badgeScale})`,
+                marginBottom: '16px',
+              }}
+            >
+              <StarBorder size={18} color={themeColor} />
+              <span style={{ fontFamily, fontSize: '16px', fontWeight: 700, color: themeColor, textTransform: 'uppercase', letterSpacing: '2px' }}>
+                FEATURED
+              </span>
+            </div>
+          )}
+        </AbsoluteFill>
+
+        {/* Bottom: Title, Dancer, Style */}
+        <AbsoluteFill
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            paddingBottom: '100px',
+            paddingLeft: '60px',
+            paddingRight: '60px',
+            pointerEvents: 'none',
+            textAlign: 'center',
+          }}
+        >
+          {/* Main Title */}
+          <div
+            style={{
+              opacity: titleOpacity,
+              transform: `translateY(${-titleSlide}px)`,
+              marginBottom: '8px',
+              textShadow: '0 4px 24px rgba(0,0,0,0.9)',
+            }}
+          >
+            <ShinyText
+              text={title}
+              color="#ffffff"
+              shineColor={themeColor}
+              speedFrames={100}
+              startFrame={textDelay}
+              style={{ fontFamily, fontSize: '72px', fontWeight: 800, display: 'inline-block', lineHeight: 1.1 }}
+            />
+          </div>
+
+          {/* Dancer handle */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
-              marginBottom: '16px',
-              opacity: titleOpacity,
-              transform: `translateY(${titleSlide * 0.5}px)`,
+              gap: '10px',
+              opacity: dancerOpacity,
+              transform: `translateY(${dancerSlide}px)`,
+              marginBottom: '6px',
+              textShadow: '0 2px 12px rgba(0,0,0,0.8)',
             }}
           >
-            <div
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                border: `3px solid ${themeColor}`,
-                borderRightColor: 'transparent',
-                animation: 'spin 1.5s linear infinite',
-                transform: `rotate(${clipProgressRing}deg)`,
-              }}
-            />
-            <div style={{ textAlign: 'left' }}>
-              <GradientText
-                colors={[themeColor, '#ffffff', themeColor]}
-                speedFrames={120}
-                startFrame={textDelay}
-                style={{ fontFamily, fontSize: '22px', fontWeight: 700, display: 'block' }}
-              >
-                CLIP {index + 1} / {total}
-              </GradientText>
-              <div style={{ fontFamily: bodyFont, fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>
-                {Math.round(progress * 100)}% COMPLETE
-              </div>
-            </div>
+            {dancer !== '' && (
+              <Music size={50} color={themeColor} />
+            )}
+            <GradientText
+              colors={['#ffffff', themeColor, '#ffffff']}
+              speedFrames={150}
+              startFrame={textDelay + 10}
+              style={{ fontFamily: bodyFont, fontSize: '84px', fontWeight: 600, display: 'inline-block' }}
+            >
+              {dancer !== '' && (dancer)}
+            </GradientText>
           </div>
-        )}
 
-        {/* Featured badge */}
-        {featured && isActive && (
+          {/* Style & Location */}
           <div
             style={{
-              display: 'inline-flex',
+              display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              padding: '8px 20px',
-              background: `linear-gradient(135deg, ${themeColor}22, ${themeColor}44)`,
-              border: `1px solid ${themeColor}66`,
-              borderRadius: '50px',
-              backdropFilter: 'blur(10px)',
-              opacity: titleOpacity,
-              transform: `translateY(${titleSlide * 0.5}px) scale(${badgeScale})`,
-              marginBottom: '16px',
+              gap: '16px',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              opacity: styleOpacity,
+              transform: `translateY(${styleSlide}px)`,
+              textShadow: '0 2px 10px rgba(0,0,0,0.7)',
             }}
           >
-            <StarBorder size={18} color={themeColor} />
-            <span style={{ fontFamily, fontSize: '16px', fontWeight: 700, color: themeColor, textTransform: 'uppercase', letterSpacing: '2px' }}>
-              FEATURED
-            </span>
-          </div>
-        )}
-      </AbsoluteFill>
-
-      {/* Bottom: Title, Dancer, Style */}
-      <AbsoluteFill
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          paddingBottom: '100px',
-          paddingLeft: '60px',
-          paddingRight: '60px',
-          pointerEvents: 'none',
-          textAlign: 'center',
-        }}
-      >
-        {/* Main Title */}
-        <div
-          style={{
-            opacity: titleOpacity,
-            transform: `translateY(${titleSlide}px)`,
-            marginBottom: '8px',
-            textShadow: '0 4px 24px rgba(0,0,0,0.9)',
-          }}
-        >
-          <ShinyText
-            text={title}
-            color="#ffffff"
-            shineColor={themeColor}
-            speedFrames={100}
-            startFrame={textDelay}
-            style={{ fontFamily, fontSize: '52px', fontWeight: 800, display: 'inline-block', lineHeight: 1.1 }}
-          />
-        </div>
-
-        {/* Dancer handle */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            opacity: dancerOpacity,
-            transform: `translateY(${dancerSlide}px)`,
-            marginBottom: '6px',
-            textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-          }}
-        >
-          <Music size={20} color={themeColor} />
-          <GradientText
-            colors={['#ffffff', themeColor, '#ffffff']}
-            speedFrames={150}
-            startFrame={textDelay + 10}
-            style={{ fontFamily: bodyFont, fontSize: '24px', fontWeight: 600, display: 'inline-block' }}
-          >
-            @{dancer}
-          </GradientText>
-        </div>
-
-        {/* Style & Location */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            opacity: styleOpacity,
-            transform: `translateY(${styleSlide}px)`,
-            textShadow: '0 2px 10px rgba(0,0,0,0.7)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 16px', background: 'rgba(0,0,0,0.5)', borderRadius: '20px', border: `1px solid ${themeColor}44` }}>
-            <Zap size={16} color={themeColor} />
-            <span style={{ fontFamily: bodyFont, fontSize: '18px', fontWeight: 500, color: '#ffffff' }}>{style}</span>
-          </div>
-          {location && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 16px', background: 'rgba(0,0,0,0.5)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <Heart size={16} color={themeColor} />
-              <span style={{ fontFamily: bodyFont, fontSize: '18px', fontWeight: 400, color: '#e0e0e0' }}>{location}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 16px', background: 'rgba(0,0,0,0.5)', borderRadius: '20px', border: `1px solid ${themeColor}44` }}>
+              <Zap size={50} color={themeColor} />
+              <span style={{ fontFamily: bodyFont, fontSize: '48px', fontWeight: 500, color: '#ffffff' }}>{style}</span>
             </div>
-          )}
-        </div>
+            {location && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 16px', background: 'rgba(0,0,0,0.5)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <Heart size={50} color={themeColor} />
+                <span style={{ fontFamily: bodyFont, fontSize: '48px', fontWeight: 400, color: '#e0e0e0' }}>{location}</span>
+              </div>
+            )}
+          </div>
+        </AbsoluteFill>
       </AbsoluteFill>
-    </AbsoluteFill>
-  );
-};
+    );
+  };
 
 /**
  * Global progress bar at top of compilation
  */
-const GlobalProgressBar: React.FC<{ 
-  progress: number; 
-  totalClips: number; 
+const GlobalProgressBar: React.FC<{
+  progress: number;
+  totalClips: number;
   currentClip: number;
   primaryColor: string;
   secondaryColor: string;
@@ -431,10 +439,10 @@ const GlobalProgressBar: React.FC<{
 /**
  * Compilation title card (shown at start)
  */
-const TitleCard: React.FC<{ 
-  title: string; 
-  subtitle: string; 
-  primaryColor: string; 
+const TitleCard: React.FC<{
+  title: string;
+  subtitle: string;
+  primaryColor: string;
   secondaryColor: string;
   delay: number;
 }> = ({ title, subtitle, primaryColor, secondaryColor, delay }) => {
@@ -456,7 +464,7 @@ const TitleCard: React.FC<{
         justifyContent: 'center',
         alignItems: 'center',
         opacity,
-        transform: `scale(${scale})`,
+        transform: `scale(${scale + (frame / 1000)})`, //zoom to the tittle
         pointerEvents: 'none',
         zIndex: 200,
       }}
@@ -471,15 +479,15 @@ const TitleCard: React.FC<{
           transform: `translateY(${titleSlide}px)`,
         }}
       >
-        <div style={{ width: '60px', height: '4px', background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`, borderRadius: '2px' }} />
-        <Sparkles style={{ fontSize: '28px' }} />
-        <div style={{ width: '60px', height: '4px', background: `linear-gradient(90deg, ${secondaryColor}, ${primaryColor})`, borderRadius: '2px' }} />
+        <div style={{ width: '160px', height: '14px', background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`, borderRadius: '2px' }} />
+        <Sparkles style={{ fontSize: '58px' }} />
+        <div style={{ width: '160px', height: '14px', background: `linear-gradient(90deg, ${secondaryColor}, ${primaryColor})`, borderRadius: '2px' }} />
       </div>
       <GradientText
         colors={[primaryColor, '#ffffff', secondaryColor, '#ffffff', primaryColor]}
         speedFrames={200}
         startFrame={delay}
-        style={{ fontFamily, fontSize: '72px', fontWeight: 800, textAlign: 'center', lineHeight: 1.1, textShadow: '0 8px 32px rgba(0,0,0,0.8)' }}
+        style={{ fontFamily, fontSize: '102px', fontWeight: 800, textAlign: 'center', lineHeight: 1.1, textShadow: '0 8px 32px rgba(0,0,0,0.8)' }}
       >
         {title}
       </GradientText>
@@ -490,14 +498,17 @@ const TitleCard: React.FC<{
           transform: `translateY(${subtitleSlide}px)`,
         }}
       >
-        <ShinyText
-          text={subtitle}
-          color="#e0e0e0"
-          shineColor={primaryColor}
-          speedFrames={120}
-          startFrame={delay + 20}
-          style={{ fontFamily: bodyFont, fontSize: '28px', fontWeight: 400, display: 'inline-block' }}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <ShinyText
+            text={subtitle}
+            color="#fcfcfc"
+            shineColor={primaryColor}
+            speedFrames={20}
+            startFrame={delay + 20}
+            style={{ fontFamily: displayFont, fontSize: '58px', fontWeight: 600, display: 'inline-block' }}
+          />
+          <span style={{ fontSize: '58px' }}>🔥🔥🔥</span>
+        </div>
       </div>
     </AbsoluteFill>
   );
@@ -538,11 +549,11 @@ export const DanceCompilation: React.FC<DanceCompilationProps> = ({
   for (let i = 0; i < totalClips; i++) {
     const clipStart = i * clipDuration;
     const clipEnd = clipStart + clipDuration;
-    
+
     if (frame >= clipStart && frame < clipEnd) {
       currentClipIndex = i;
       const elapsedInClip = frame - clipStart;
-      
+
       // Check if in transition zone at end of clip
       if (elapsedInClip > clipDuration - transitionFrames && i < totalClips - 1) {
         isTransitioning = true;
@@ -574,7 +585,7 @@ export const DanceCompilation: React.FC<DanceCompilationProps> = ({
   return (
     <AbsoluteFill style={{ backgroundColor: 'black', position: 'relative' }}>
       {/* Background Music */}
-      <Audio src={staticFile(backgroundMusic)} volume={musicVolume} />
+      <Html5Audio src={staticFile(backgroundMusic)} volume={musicVolume} />
 
       {/* Particles ambient effect */}
       {enableParticles && (
@@ -601,7 +612,7 @@ export const DanceCompilation: React.FC<DanceCompilationProps> = ({
             index={currentClipIndex}
             total={totalClips}
             globalProgress={globalProgress}
-            themeColor={currentClip.themeColor || primaryColor[0]}
+            themeColor={currentClip.themeColor || primaryColor}
             textDelay={isTransitioning ? 0 : 10}
           />
         </Sequence>

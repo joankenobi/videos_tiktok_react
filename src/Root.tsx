@@ -210,7 +210,7 @@ export const RemotionRoot: React.FC = () => {
         schema={danceCompilationSchema}
         defaultProps={{
           compilationTitle: "DANCE COMPILATION",
-          compilationSubtitle: "Best moves of the week 🔥",
+          compilationSubtitle: "Best moves of the week",
           primaryColor: "#fe2c55",
           secondaryColor: "#3b82f6",
           backgroundMusic: "background-music.mp3",
