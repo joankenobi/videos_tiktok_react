@@ -112,7 +112,7 @@ uniqueByDimensionsSize.forEach((img, index) => {
 });
 
 console.log("\n🎉 All renders completed!");
-playSong = 'powershell -c "(New-Object Media.SoundPlayer \'C:\Windows\Media\tada.wav\').PlaySync()"'
+playSong = "powershell -c \"(New-Object Media.SoundPlayer 'C:\Windows\Media\tada.wav').PlaySync()\""
 execSync(playSong)
 execSync(playSong)
 execSync(playSong)

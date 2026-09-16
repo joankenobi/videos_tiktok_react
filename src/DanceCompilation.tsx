@@ -1,21 +1,24 @@
 import React from 'react';
 import {
   AbsoluteFill,
-  Html5Audio,
-  Sequence,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
   interpolate,
   spring,
+  Img,
+  Sequence,
 } from 'remotion';
+import { Audio } from '@remotion/media';
+import { TransitionSeries, linearTiming } from '@remotion/transitions';
+import { fade } from '@remotion/transitions/fade';
 import { z } from 'zod';
 import { FittedVideo, fittedVideoSchema } from './FittedVideo';
 import { GradientText, ShinyText, Particles, StarBorder } from './ReactBitsForRemotion';
 import { loadFont } from '@remotion/google-fonts/SpaceGrotesk';
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { loadFont as loadMontserrat } from '@remotion/google-fonts/Montserrat';
-import { Music, Sparkles, Zap, Heart, Award } from 'lucide-react';
+import { Music, Sparkles, Zap, Heart } from 'lucide-react';
 
 let fontFamily = 'system-ui, sans-serif';
 let bodyFont = 'system-ui, sans-serif';
@@ -94,10 +97,9 @@ export type DanceCompilationProps = z.infer<typeof danceCompilationSchema>;
  */
 const DanceClip: React.FC<DanceClipProps & {
   isActive: boolean;
-  progress: number;
   index: number;
   total: number;
-  globalProgress: number;
+  globalProgress?: number;
 }> = ({
   src,
   title,
@@ -119,13 +121,11 @@ const DanceClip: React.FC<DanceClipProps & {
   textDelay = 0,
   featured = false,
   isActive,
-  progress,
   index,
   total,
-  globalProgress,
 }) => {
     const frame = useCurrentFrame();
-    const { fps } = useVideoConfig();
+    const { fps, durationInFrames } = useVideoConfig();
 
     // Entrance animation for text overlays
     const textEntrance = spring({
@@ -164,8 +164,12 @@ const DanceClip: React.FC<DanceClipProps & {
     // Featured badge pulse
     const badgeScale = featured ? 1 + Math.sin(frame / 8) * 0.1 : 1;
 
-    // Progress ring for this clip
-    const clipProgressRing = progress * 360;
+    // Progress within this clip's sequence (0 → 1), driven by local frame
+    const clipProgress = durationInFrames > 0 ? Math.min(frame / durationInFrames, 1) : 1;
+    const clipProgressRing = clipProgress * 360;
+
+    // Constant spin effect (frame-driven, deterministic for Remotion)
+    const spinAngle = ((frame % (6 * fps)) / (6 * fps)) * 360;
 
     return (
       <AbsoluteFill style={{ position: 'relative', overflow: 'hidden' }}>
@@ -223,8 +227,7 @@ const DanceClip: React.FC<DanceClipProps & {
                   borderRadius: '50%',
                   border: `3px solid ${themeColor}`,
                   borderRightColor: 'transparent',
-                  animation: 'spin 0.01s linear infinite',
-                  transform: `rotate(${clipProgressRing*2}deg)`,
+                  transform: `rotate(${spinAngle + clipProgressRing * 2}deg)`,
                 }}
               />
               <div style={{ textAlign: 'left' }}>
@@ -239,7 +242,7 @@ const DanceClip: React.FC<DanceClipProps & {
                 <div
                   style={{ fontFamily: bodyFont, fontSize: '34px', color: 'rgb(255, 255, 255)', marginTop: '2px', WebkitTextStroke: '0.2px rgb(114, 114, 114)' }}
                 >
-                  {Math.round(progress * 100)}% COMPLETE
+                  {Math.round(clipProgress * 100)}% COMPLETE
                 </div>
               </div>
             </div>
@@ -367,9 +370,6 @@ const GlobalProgressBar: React.FC<{
   primaryColor: string;
   secondaryColor: string;
 }> = ({ progress, totalClips, currentClip, primaryColor, secondaryColor }) => {
-  // const frame = useCurrentFrame();
-  // const { fps, durationInFrames } = useVideoConfig(); La Ia los creo pero no son usados
-
   // Overall progress
   const overallProgress = (currentClip + progress) / totalClips;
 
@@ -397,7 +397,6 @@ const GlobalProgressBar: React.FC<{
             width: `${overallProgress * 100}%`,
             background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`,
             borderRadius: '3px',
-            transition: 'width 0.1s linear',
           }}
         />
         {/* Segment dividers */}
@@ -455,6 +454,11 @@ const TitleCard: React.FC<{
 
   const titleSlide = interpolate(entrance, [0, 1], [40, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
   const subtitleSlide = interpolate(entrance, [0, 1], [30, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  // Subtle zoom effect using interpolate with clamp to prevent infinite growth
+  const zoomScale = interpolate(frame, [delay, delay + 60 * fps], [scale, scale * 1.02], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
 
   return (
     <AbsoluteFill
@@ -464,7 +468,7 @@ const TitleCard: React.FC<{
         justifyContent: 'center',
         alignItems: 'center',
         opacity,
-        transform: `scale(${scale + (frame / 1000)})`, //zoom to the tittle
+        transform: `scale(${zoomScale})`,
         pointerEvents: 'none',
         zIndex: 200,
       }}
@@ -521,10 +525,8 @@ export const DanceCompilation: React.FC<DanceCompilationProps> = ({
   clips,
   backgroundMusic,
   musicVolume = 0.35,
-  transitionStyle = 'crossfade',
   transitionDuration = 15,
   showProgressBar = true,
-  showClipCounter = true,
   compilationTitle = 'DANCE COMPILATION',
   compilationSubtitle = 'Best moves of the week',
   watermark,
@@ -534,58 +536,23 @@ export const DanceCompilation: React.FC<DanceCompilationProps> = ({
   secondaryColor = '#3b82f6',
 }) => {
   const frame = useCurrentFrame();
-  const { fps, durationInFrames, width, height } = useVideoConfig();
+  const { fps, durationInFrames } = useVideoConfig();
 
   const totalClips = clips.length;
   const clipDuration = Math.floor(durationInFrames / totalClips);
   const transitionFrames = transitionDuration;
 
-  // Calculate which clip is active and transition progress
-  let currentClipIndex = 0;
-  let clipProgress = 0;
-  let isTransitioning = false;
-  let transitionProgress = 0;
-
-  for (let i = 0; i < totalClips; i++) {
-    const clipStart = i * clipDuration;
-    const clipEnd = clipStart + clipDuration;
-
-    if (frame >= clipStart && frame < clipEnd) {
-      currentClipIndex = i;
-      const elapsedInClip = frame - clipStart;
-
-      // Check if in transition zone at end of clip
-      if (elapsedInClip > clipDuration - transitionFrames && i < totalClips - 1) {
-        isTransitioning = true;
-        transitionProgress = (elapsedInClip - (clipDuration - transitionFrames)) / transitionFrames;
-        clipProgress = 1 - transitionProgress; // Outgoing clip fades out
-      } else {
-        clipProgress = elapsedInClip / clipDuration;
-      }
-      break;
-    }
-  }
-
-  // Handle last frame edge case
-  if (frame >= durationInFrames) {
-    currentClipIndex = totalClips - 1;
-    clipProgress = 1;
-  }
-
-  const currentClip = clips[currentClipIndex];
-  const nextClip = clips[currentClipIndex + 1];
-
-  // Global progress for progress bar
-  const globalProgress = (currentClipIndex + clipProgress) / totalClips;
-
   // Title card shows for first 2 seconds
   const titleCardDuration = 2 * fps;
   const showTitleCard = frame < titleCardDuration;
 
+  // Build transition timing
+  const transitionTiming = linearTiming({ durationInFrames: transitionFrames });
+
   return (
     <AbsoluteFill style={{ backgroundColor: 'black', position: 'relative' }}>
       {/* Background Music */}
-      <Html5Audio src={staticFile(backgroundMusic)} volume={musicVolume} />
+      <Audio src={staticFile(backgroundMusic)} volume={musicVolume} />
 
       {/* Particles ambient effect */}
       {enableParticles && (
@@ -601,65 +568,40 @@ export const DanceCompilation: React.FC<DanceCompilationProps> = ({
         </AbsoluteFill>
       )}
 
-      {/* Video Clips with Transitions */}
+      {/* Video Clips with TransitionSeries */}
       <AbsoluteFill style={{ position: 'relative', zIndex: 10 }}>
-        {/* Current Clip */}
-        <Sequence from={currentClipIndex * clipDuration} durationInFrames={clipDuration} layout="none">
-          <DanceClip
-            {...currentClip}
-            isActive={true}
-            progress={clipProgress}
-            index={currentClipIndex}
-            total={totalClips}
-            globalProgress={globalProgress}
-            themeColor={currentClip.themeColor || primaryColor}
-            textDelay={isTransitioning ? 0 : 10}
-          />
-        </Sequence>
-
-        {/* Next Clip (for crossfade transition) */}
-        {isTransitioning && nextClip && (
-          <Sequence from={currentClipIndex * clipDuration} durationInFrames={clipDuration} layout="none">
-            <div style={{ opacity: transitionProgress }}>
-              <DanceClip
-                {...nextClip}
-                isActive={false}
-                progress={0}
-                index={currentClipIndex + 1}
-                total={totalClips}
-                globalProgress={globalProgress}
-                themeColor={nextClip.themeColor || primaryColor}
-                textDelay={0}
-              />
-            </div>
-          </Sequence>
-        )}
-
-        {/* Render all other clips (for seek/preview) - only when not transitioning */}
-        {!isTransitioning && clips.map((clip, i) => (
-          i !== currentClipIndex && (
-            <Sequence key={i} from={i * clipDuration} durationInFrames={clipDuration} layout="none">
-              <DanceClip
-                {...clip}
-                isActive={false}
-                progress={i < currentClipIndex ? 1 : 0}
-                index={i}
-                total={totalClips}
-                globalProgress={globalProgress}
-                themeColor={clip.themeColor || primaryColor}
-                textDelay={0}
-              />
-            </Sequence>
-          )
-        ))}
+        <TransitionSeries>
+          {clips.map((clip, i) => (
+            <React.Fragment key={i}>
+              <TransitionSeries.Sequence durationInFrames={clipDuration} layout="none">
+                <Sequence durationInFrames={clipDuration} layout="none">
+                  <DanceClip
+                    {...clip}
+                    isActive={true}
+                    index={i}
+                    total={totalClips}
+                    themeColor={clip.themeColor || primaryColor}
+                    textDelay={10}
+                  />
+                </Sequence>
+              </TransitionSeries.Sequence>
+              {i < totalClips - 1 && (
+                <TransitionSeries.Transition
+                  presentation={fade()}
+                  timing={transitionTiming}
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </TransitionSeries>
       </AbsoluteFill>
 
       {/* Global Progress Bar */}
       {showProgressBar && (
         <GlobalProgressBar
-          progress={clipProgress}
+          progress={1}
           totalClips={totalClips}
-          currentClip={currentClipIndex}
+          currentClip={Math.min(Math.floor(frame / clipDuration), totalClips - 1)}
           primaryColor={primaryColor}
           secondaryColor={secondaryColor}
         />
@@ -688,7 +630,7 @@ export const DanceCompilation: React.FC<DanceCompilationProps> = ({
             zIndex: 1000,
           }}
         >
-          <img
+          <Img
             src={staticFile(watermark)}
             style={{
               width: '100px',
