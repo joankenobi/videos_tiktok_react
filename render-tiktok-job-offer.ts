@@ -41,6 +41,7 @@ interface RenderOptions {
   watermarkPosition?: string;
   watermarkOpacity?: string;
   watermarkSize?: string;
+  hideWatermark?: boolean;
   still?: string;
   frame?: string;
 }
@@ -51,7 +52,8 @@ program
   .name('render-tiktok-job-offer')
   .description('Render TikTok Job Offer video composition')
   .requiredOption('-i, --image <path>', 'Background image file (in public/ folder)')
-  .requiredOption('-w, --watermark <path>', 'Watermark image file (in public/ folder)')
+  .option('-w, --watermark <path>', 'Watermark image file (in public/ folder)')
+  .option('--hide-watermark', 'Render without the watermark', false)
   .option('-o, --output <path>', 'Output video path', 'out/tiktok-job-offer.mp4')
   .option('--job-title <text>', 'Job title', 'Senior React Developer')
   .option('--company-name <text>', 'Company name', 'TechCorp Inc.')
@@ -89,7 +91,9 @@ async function main() {
   // Validate required files exist in public folder
   const publicDir = path.join(__dirname, 'public');
   const imagePath = path.join(publicDir, options.image);
-  const watermarkPath = path.join(publicDir, options.watermark);
+  const watermarkPath = options.watermark
+    ? path.join(publicDir, options.watermark)
+    : null;
 
   // Check if files exist
   const fs = await import('fs');
@@ -98,7 +102,7 @@ async function main() {
     console.error(`   Make sure "${options.image}" exists in the public/ folder`);
     process.exit(1);
   }
-  if (!fs.existsSync(watermarkPath)) {
+  if (watermarkPath && !fs.existsSync(watermarkPath)) {
     console.error(`❌ Error: Watermark not found at ${watermarkPath}`);
     console.error(`   Make sure "${options.watermark}" exists in the public/ folder`);
     process.exit(1);
@@ -142,6 +146,7 @@ async function main() {
     backgroundRotationStart: parseFloat(options.rotationStart || '0'),
     backgroundRotationEnd: parseFloat(options.rotationEnd || '2'),
     enableKenBurns: options.kenBurns !== 'false',
+    showWatermark: options.hideWatermark !== true,
     watermarkImage: options.watermark,
     watermarkPosition: (options.watermarkPosition as any) || 'bottom-right',
     watermarkOpacity: parseFloat(options.watermarkOpacity || '0.3'),

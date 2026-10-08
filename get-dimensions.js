@@ -1,9 +1,10 @@
 const fs = require("fs");
 const path = require("path");
-const { execSync } = require("child_process");
+const { execSync, execFileSync } = require("child_process");
 
 class ImageToWork {
-  constructor(name, width, height, fileSizeBytes, sizeOnDisk) {
+  constructor(relPath, name, width, height, fileSizeBytes, sizeOnDisk) {
+    this.relPath = relPath;
     this.name = name;
     this.width = width;
     this.height = height;
@@ -11,6 +12,9 @@ class ImageToWork {
     this.sizeOnDisk = sizeOnDisk;
   }
 
+  getRelPath() {
+    return this.relPath;
+  }
   getName() {
     return this.name;
   }
@@ -28,6 +32,22 @@ class ImageToWork {
   }
 }
 
+function collectJpgFiles(dir, found = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectJpgFiles(full, found);
+    } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".jpg")) {
+      found.push(full);
+    }
+  }
+  return found;
+}
+
+function toPosix(p) {
+  return p.split(path.sep).join("/");
+}
+
 function getUniqueBy(arr, keyFn) {
   return [...new Map(arr.map((item) => [keyFn(item), item])).values()];
 }
@@ -35,17 +55,32 @@ function getUniqueBy(arr, keyFn) {
 let imageToWork = [];
 let imageTofilter = [];
 
-const basePath = "locations";
-const dir = `c:\\Users\\Public\\Documents\\Programacion\\remotion-video\\public\\${basePath}`;
-const files = fs.readdirSync(dir).filter((f) => f.endsWith(".jpg"));
+const publicDir = path.join(__dirname, "public");
+const basePath = "locations\\rrhh_Venezuela";
+const tiktokChannel = "@trabajosvenezuela";
+const dir = path.join(publicDir, basePath);
 
-files.forEach((file) => {
-  const filepath = path.join(dir, file);
+if (!fs.existsSync(dir)) {
+  console.error(`❌ Base folder not found: ${dir}`);
+  process.exit(1);
+}
+
+const files = collectJpgFiles(dir).sort();
+
+if (files.length === 0) {
+  console.error(`❌ No .jpg files found (recursively) under: ${dir}`);
+  process.exit(1);
+}
+
+console.log(`📂 Found ${files.length} .jpg file(s) under ${basePath}`);
+
+files.forEach((filepath) => {
+  const name = path.basename(filepath);
+  const relPath = toPosix(path.relative(publicDir, filepath));
   try {
-    const result = execSync(
-      'magick identify -format "%w %h %b" "' + filepath + '"',
-      { encoding: "utf8" },
-    )
+    const result = execFileSync("magick", ["identify", "-format", "%w %h %b", filepath], {
+      encoding: "utf8",
+    })
       .trim()
       .split(" ", 3);
     const width = result[0];
@@ -61,11 +96,11 @@ files.forEach((file) => {
     console.log(fileSizeBytes2);
 
     imageToWork.push(
-      new ImageToWork(file, width, height, fileSizeBytes, sizeOnDisk),
+      new ImageToWork(relPath, name, width, height, fileSizeBytes, sizeOnDisk),
     );
     console.log(result);
   } catch (e) {
-    console.log(file + ": ERROR - " + e.message);
+    console.log(relPath + ": ERROR - " + e.message);
   }
 });
 
@@ -76,6 +111,10 @@ const uniqueByDimensionsSize = getUniqueBy(
 
 console.log(imageToWork.length);
 console.log(uniqueByDimensionsSize.length);
+const duplicatesSkipped = imageToWork.length - uniqueByDimensionsSize.length;
+if (duplicatesSkipped > 0) {
+  console.log(`♻️  Skipped ${duplicatesSkipped} duplicate(s) (same WxH + byte size)`);
+}
 // console.log(uniqueByDimensionsSize);
 // imageToWork.forEach((img) => {
 
@@ -84,38 +123,55 @@ console.log(uniqueByDimensionsSize.length);
 
 // })
 
+let ok = 0;
+let failed = 0;
+
 uniqueByDimensionsSize.forEach((img, index) => {
-  const outputName = img.name.replace(".jpg", ".png");
-  const cmd = `npm run render:job-offer -- --still true --frame 0 --image "${basePath}/${img.name}" --watermark "watermark.PNG" --auto-fit true --image-width ${img.width} --image-height ${img.height} --show-text false -o out/${basePath}/${outputName}`;
+  const relPath = img.getRelPath();
+  const outputRelPath = relPath.replace(/\.jpg$/i, ".png");
+  const cmd = `npm run render:job-offer -- --still true --frame 0 --image "${relPath}" --watermark "watermark.PNG" --auto-fit true --image-width ${img.width} --image-height ${img.height} --show-text false -o "out/${outputRelPath}" --company-name "${tiktokChannel}"`;
 
   console.log(
-    `\n[${index + 1}/${uniqueByDimensionsSize.length}] Rendering ${img.name} (${img.width}x${img.height}) as still image...`,
+    `\n[${index + 1}/${uniqueByDimensionsSize.length}] Rendering ${relPath} (${img.width}x${img.height}) as still image...`,
   );
   console.log(`Command: ${cmd}\n`);
 
   try {
     execSync(cmd, {
       stdio: "inherit",
-      cwd: "c:\\Users\\Public\\Documents\\Programacion\\remotion-video",
+      cwd: __dirname,
     });
 
     /* stdio: 'inherit'
     Por defecto, cuando ejecutas un comando desde Node.js, los resultados y los errores ocurren "en silencio" dentro del proceso. Al poner 'inherit' (heredar), le estás diciendo: "Muestra la salida y los errores de este comando directamente en la misma pantalla/terminal donde ejecuté mi script de Node". Si el comando muestra una barra de progreso o texto en la consola, lo verás en tiempo real.*/
 
-    /*cwd: 'c:\\Users\\Public\\Documents\\...'
-    cwd significa Current Working Directory (Directorio de Trabajo Actual). Le indica a Node.js en qué carpeta exacta de tu disco duro debe pararse antes de ejecutar el comando cmd. Es el equivalente a hacer un cd c:\Users\Public\... en la terminal antes de correr tu comando. (Nota cómo usa doble barra invertida \\ para escapar el carácter en Windows).*/
+    /*cwd: __dirname
+    cwd significa Current Working Directory (Directorio de Trabajo Actual). __dirname es la carpeta donde vive este script, así que el comando se ejecuta siempre desde la raíz del proyecto, sin importar desde dónde lo llames.*/
 
-    console.log(`\n✅ Completed: ${outputName}`);
+    ok++;
+    console.log(`\n✅ Completed: ${outputRelPath}`);
   } catch (e) {
-    console.error(`\n❌ Failed: ${img.name} - ${e.message}`);
+    failed++;
+    console.error(`\n❌ Failed: ${relPath} - ${e.message}`);
   }
 });
 
-console.log("\n🎉 All renders completed!");
-playSong = "powershell -c \"(New-Object Media.SoundPlayer 'C:\Windows\Media\tada.wav').PlaySync()\""
-execSync(playSong)
-execSync(playSong)
-execSync(playSong)
+console.log(
+  `\n${failed === 0 ? "🎉" : "⚠️"}  ${ok} rendered, ${failed} failed, ${duplicatesSkipped} duplicate(s) skipped, ${imageToWork.length} image(s) scanned.`,
+);
+
+if (ok > 0) {
+  const playSong = String.raw`powershell -c "(New-Object Media.SoundPlayer 'C:\Windows\Media\tada.wav').PlaySync()"`;
+  try {
+    execSync(playSong);
+    execSync(playSong);
+    execSync(playSong);
+  } catch {
+    // audio is cosmetic; never abort the batch
+  }
+}
+
+process.exitCode = failed === 0 ? 0 : 1;
 
 // for run node get-dimensions.js
 

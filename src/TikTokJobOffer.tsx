@@ -47,6 +47,7 @@ export const tikTokJobOfferSchema = z.object({
     enableKenBurns: z.boolean().default(true),
     
     // Watermark
+    showWatermark: z.boolean().default(true),
     watermarkImage: z.string().default('watermark.png'),
     watermarkPosition: z.enum(['bottom-right', 'top-right', 'bottom-left', 'top-left']).default('bottom-right'),
     // Use z.preprocess to handle string input from Remotion Studio and convert to number
@@ -318,6 +319,7 @@ export const TikTokJobOffer: React.FC<TikTokJobOfferProps> = ({
     backgroundImage,
     backgroundType,
     videoStartOffset,
+    showWatermark,
     watermarkImage,
     watermarkPosition,
     watermarkOpacity,
@@ -338,10 +340,6 @@ export const TikTokJobOffer: React.FC<TikTokJobOfferProps> = ({
     // Ken Burns controls
     backgroundZoomStart,
     backgroundZoomEnd,
-    backgroundPanXStart,
-    backgroundPanXEnd,
-    backgroundPanYStart,
-    backgroundPanYEnd,
     backgroundRotationStart,
     backgroundRotationEnd,
     enableKenBurns,
@@ -460,7 +458,7 @@ export const TikTokJobOffer: React.FC<TikTokJobOfferProps> = ({
                 {/* ReactBits: Particles background effect */}
                 <Particles 
                     count={40} 
-                    colors={[primaryColor + '55', primaryColor + '88', '#ffffff33', '#22c55e44']} 
+                    ParticlesColors={[primaryColor + '55', primaryColor + '88', '#ffffff33', '#22c55e44']} 
                     seed={7}
                 />
                 
@@ -476,6 +474,27 @@ export const TikTokJobOffer: React.FC<TikTokJobOfferProps> = ({
                         pointerEvents: 'none',
                     }}
                 />
+                
+                {/* Translucent center text/watermark */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        fontSize: '56px',
+                        fontWeight: 900,
+                        color: 'rgba(255, 255, 255, 0.44)',
+                        fontFamily,
+                        textTransform: 'uppercase',
+                        letterSpacing: '8px',
+                        pointerEvents: 'none',
+                        zIndex: 1,
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {companyName}
+                </div>
                 
                 {/* Dark overlay for text readability */}
                 <div
@@ -503,12 +522,14 @@ export const TikTokJobOffer: React.FC<TikTokJobOfferProps> = ({
             </AbsoluteFill>
 
             {/* Watermark */}
-            <Watermark
-                src={watermarkImage}
-                position={watermarkPosition}
-                opacity={watermarkOpacity}
-                size={watermarkSize}
-            />
+            {showWatermark && watermarkImage && (
+                <Watermark
+                    src={watermarkImage}
+                    position={watermarkPosition}
+                    opacity={watermarkOpacity}
+                    size={watermarkSize}
+                />
+            )}
 
             {/* Background Music */}
             {backgroundMusic && (

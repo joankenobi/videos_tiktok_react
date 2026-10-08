@@ -272,7 +272,7 @@ interface ParticlesProps {
     seed?: number;
     speed?:number;
     opacity?:number
-    style: StylesProps
+    style?: StylesProps
 }
 
 export const Particles: React.FC<ParticlesProps> = ({

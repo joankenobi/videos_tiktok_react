@@ -149,7 +149,7 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={tikTokJobOfferSchema}
         defaultProps={{
-          backgroundImage: "locations\\231373_20260909.jpg",
+          backgroundImage: "job-background.jpg",
           backgroundType: "image" as const,
           videoStartOffset: 0,
           backgroundZoomStart: 1,
