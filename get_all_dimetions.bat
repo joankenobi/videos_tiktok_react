@@ -1,3 +1,7 @@
+cd /d "%~dp0"
+rd "C:\Users\Public\Documents\Programacion\remotion-video\out\locations" /S
+robocopy "C:\Users\Public\Documents\Programacion\telegram back\downloads\locations" "C:\Users\Public\Documents\Programacion\remotion-video\public\locations" /E /V /Z
 node get-dimensions.js
-node .\get-dimensions-nowater-jobsencaracas.js
-node .\get-dimensions-nowater-TRABAJOYPUBLICIDAD2018.js
+
+
+rd "C:\Users\Public\Documents\Programacion\remotion-video\public\locations" /S
